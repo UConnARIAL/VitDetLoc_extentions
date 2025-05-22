@@ -19,3 +19,5 @@ conda activate vit_sandbox
 conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 module load gcc/9.4.0
 pip install --use-pep517 --no-build-isolation git+https://github.com/facebookresearch/detectron2.git
+
+```
