@@ -14,6 +14,20 @@ module load python3/3.9.7
 module load cuda/11.3
 
 FOR LS6
+cd $SCRATCH
+
+# Download Miniconda3 installer for Linux x86_64
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+chmod +x miniconda.sh
+
+# Install to a writable directory
+./miniconda.sh -b -p $SCRATCH/miniconda3
+
+# Initialize conda
+source $SCRATCH/miniconda3/etc/profile.d/conda.sh
+conda init bash
+source ~/.bashrc
+
 conda create --name vit_sandbox python=3.10
 conda activate vit_sandbox
 conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
