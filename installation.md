@@ -7,7 +7,7 @@ mamba install pytorch=1.10.2 torchvision=0.11.3 cudatoolkit=10.2 -c pytorch
 
 python -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu102/torch1.10/index.html
 
-```
+
 module purge
 module load gcc/11.2.0
 module load python3/3.9.7
