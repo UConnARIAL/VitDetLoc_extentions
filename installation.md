@@ -31,7 +31,30 @@ source ~/.bashrc
 conda create --name vit_sandbox python=3.10
 conda activate vit_sandbox
 conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+which gcc
+gcc --version
+# Use gcc > 9 by module load after checking with module spider or eq.
+# Detectron2 cannot be built with old < 9 gcc compilers in the HPC by default.
 module load gcc/9.4.0
 pip install --use-pep517 --no-build-isolation git+https://github.com/facebookresearch/detectron2.git
+
+conda env update --file environment.yml
+
+05/23/2025 Frontera
+
+setup mamba
+setup env with python 3.9.2
+
+mamba install pytorch=1.10.2 torchvision=0.11.3 cudatoolkit=10.2 -c pytorch
+
+# update env file to remove name anding pip for dependency.
+conda env update --file=environment.yml
+pip install --use-pep517 --no-build-isolation git+https://github.com/facebookresearch/detectron2.git
+
+```
+
+
+
+
 
 ```
