@@ -1,3 +1,63 @@
+###Installing VitDetLoc on FRONTERA with older libc and other potential incompatibility issues
+
+```
+# Download Miniconda3 installer for Linux x86_64
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+chmod +x miniconda.sh
+
+# Install to a writable directory
+./miniconda.sh -b -p $SCRATCH/miniconda3
+
+# Initialize conda
+source $SCRATCH/miniconda3/etc/profile.d/conda.sh
+conda init bash
+source ~/.bashrc
+
+# make sure it is using the installed miniconda version
+conda info | grep 'base environment'
+#Check output
+#base environment : /scratch/<XXX>/<XXX>/miniconda3  (writable)
+
+# Create the following updated env to create new env
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - rasterio
+  - opencv
+  - torchgeo
+  - albumentations
+  - kornia
+  - scikit-learn
+  - seaborn
+  - pip:
+      - lightning
+      - haversine
+      - frozendict
+
+conda env create -f env2.yml --prefix $scratch/CONDA_ENV/vitdetloc-env
+
+# activate env
+conda activate /$scratch/CONDA_ENV/vitdetloc-env
+
+conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
+module load cuda/11.3
+
+# Check C++ aka gcc compiler version
+which gcc
+gcc --version
+# Use gcc > 9 by module load after checking with module spider or eq.
+# Detectron2 cannot be built with old < 9 gcc compilers in the HPC by default.
+module load gcc/9.4.0
+pip install --use-pep517 --no-build-isolation git+https://github.com/facebookresearch/detectron2.git
+
+#####################################################################################################
+
+
+
 ###Installing VitDetLoc on HPC with older libc and other potential incompatibility issues
 
 ```
