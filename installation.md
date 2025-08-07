@@ -1,4 +1,5 @@
 ###Installing VitDetLoc on FRONTERA with older libc and other potential incompatibility issues
+Frontera has cuda 11.3 but there is no driver that can be installed via cuda so pip is the only solution
 
 ```
 # Download Miniconda3 installer for Linux x86_64
@@ -17,6 +18,9 @@ source ~/.bashrc
 conda info | grep 'base environment'
 #Check output
 #base environment : /scratch/<XXX>/<XXX>/miniconda3  (writable)
+
+module load cuda/11.3
+module load gcc/9.1.0
 
 # Create the following updated env to create new env
 channels:
@@ -43,8 +47,40 @@ conda env create -f env2.yml --prefix $scratch/CONDA_ENV/vitdetloc-env
 # activate env
 conda activate /$scratch/CONDA_ENV/vitdetloc-env
 
-conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-module load cuda/11.3
+#NOT going to work: conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
+pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
+
+# Check:
+python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
+python -c "import torch; print(torch.cuda.get_device_name(0))"
+
+check If there are issues with cuda liraries it could be PATH issue
+echo $LD_LIBRARY_PATH
+
+Should see:
+/usr/local/cuda-11.3/lib64
+/usr/lib/x86_64-linux-gnu
+
+Check if it is pointing to stubs
+ls -l $(find /opt/apps/cuda/11.3/ -name libcuda.so 2>/dev/null)
+
+Not the real driver 
+/opt/apps/cuda/11.3/targets/x86_64-linux/lib/stubs/libcuda.so
+
+Check where PyTorch is looking for libcuda.so
+ldd $(python -c "import torch; print(torch.__file__)")
+
+If you see PROBLEM
+/usr/local/cuda-11.3/stubs
+
+Solution
+export LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
+
+Check again
+ldd $(python -c "import torch; print(torch._C.__file__)") | grep libcuda
+
+Output should be (OR Similar)
+libcuda.so.1 => /usr/lib64/libcuda.so.1 (0x00007f1234567000)
 
 # Check C++ aka gcc compiler version
 which gcc
@@ -54,8 +90,8 @@ gcc --version
 module load gcc/9.4.0
 pip install --use-pep517 --no-build-isolation git+https://github.com/facebookresearch/detectron2.git
 
-#####################################################################################################
 
+#####################################################################################################
 
 
 ###Installing VitDetLoc on HPC with older libc and other potential incompatibility issues
