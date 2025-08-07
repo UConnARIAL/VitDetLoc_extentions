@@ -90,6 +90,14 @@ gcc --version
 module load gcc/9.4.0
 pip install --use-pep517 --no-build-isolation git+https://github.com/facebookresearch/detectron2.git
 
+With above you may need to have the following before loafing the env on the SLRUM scrips 
+
+module load gcc/11.3
+module load gcc/9.1.3
+export LD_LIBRARY_PATH=/usr/lib64:$LD_LIBRARY_PATH
+
+
+
 
 #####################################################################################################
 
